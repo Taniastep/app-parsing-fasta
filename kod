@@ -1,0 +1,64 @@
+import pandas as pd
+def clo():
+    ict = dict()
+    with open(r'C:\Users\Student\Desktop\thevv1\app_parsing_directory_and_csv\mature.fa','r') as f:
+      for line in f:
+         m = line.strip()
+         if len(m) != 0 and m[0] == '>':
+           m = m.split()
+           key = m[0][1:]
+           ict[key] = ""
+         else:
+           ict[key] += m
+
+      for key, value in ict.items():
+         print(key, '*', value)
+    return ict
+
+def mat(ict):
+    matrix = []
+    for key, value in ict.items():
+        g = value.count('G')
+        c = value.count('C')
+        k = (g + c) / len(value)
+        gc = round(k, 4)
+        row = [key, gc, *list(value)]
+        matrix.append(row)
+    return matrix
+
+
+
+def poe(matrix):
+    df = pd.DataFrame(matrix)
+    return df
+
+
+
+
+def itt(df):
+    aaa = []
+    ttt = []
+    ccc = []
+    ggg = []
+    for i in range(2, len(df.columns)):
+        aa, tt, gg, cc, gap = 0, 0, 0, 0, 0
+        st = list(df.iloc[:, i])
+        aa += st.count('A')
+        tt += st.count('T')
+        cc += st.count('C')
+        gg += st.count('G')
+        gap += st.count('-')
+        if gap / df.shape[0] < 0.5:
+            aaa.append(aa / df.shape[0])
+            ttt.append(tt / df.shape[0])
+            ccc.append(cc / df.shape[0])
+            ggg.append(gg / df.shape[0])
+    print(aaa)
+    print(ttt)
+    print(ccc)
+    print(ggg)
+
+gtre = itt(poe(mat(clo())))
+from json import *
+with open('sample.json', 'w') as fp:
+    dump(clo(), fp)
