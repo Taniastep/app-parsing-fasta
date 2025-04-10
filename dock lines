@@ -1,0 +1,98 @@
+import pandas as pd
+def clo():
+    ict = dict()
+    with open(r'C:\Users\Student\Desktop\thevv1\app_parsing_directory_and_csv\mature.fa','r') as f:
+      for line in f:
+         m = line.strip()
+         if len(m) != 0 and m[0] == '>':
+           m = m.split()
+           key = m[0][1:]
+           ict[key] = ""
+         else:
+           ict[key] += m
+
+      for key, value in ict.items():
+         print(key, '*', value)
+    return ict
+"""""
+  Принцип работы заголовка
+Заголовком считается первая строка, начинающаяся с символа >.
+Каждая такая строка интерпретируется как начало нового блока данных, который будет храниться в словаре ict
+  Как рабоотает функция clo()
+Читает файл mature.fa.
+Собирает данные в словарь, где ключи — это заголовки, а значения — последовательности строк, следующих за каждым заголовком.
+Выводит собранные данные на экран.
+Сохраняет результаты в CSV-файл.
+  Результат
+Результат возвращается в виде словаря.
+
+Функция читает файл mature.fa и создает словарь, где ключом является первая строка после символа '>',
+а значением — последовательность символов до следующей строки, начинающейся с '>'. :return: Словарь с последовательностями :rtype: dict
+"""""
+def mat(ict):
+    matrix = []
+    for key, value in ict.items():
+        g = value.count('G')
+        c = value.count('C')
+        k = (g + c) / len(value)
+        gc = round(k, 4)
+        row = [key, gc, *list(value)]
+        matrix.append(row)
+    return matrix
+"""""
+Как работает
+Функция matrix() проходит по каждому элементу словаря ict.
+Подсчитывает количество нуклеотидов 'G' и 'C'.
+Рассчитывает долю GC-содержания для каждой последовательности.
+Формирует новую матрицу, где каждая строка представляет собой ключ, долю GC и саму последовательность.
+Результат
+Матрица возвращается как результат выполнения функции.
+"""""
+
+def poe(matrix):
+    df = pd.DataFrame(matrix)
+    return df
+
+"""""
+Функция преобразует список списков в DataFrame Pandas. 
+"""""
+
+
+def itt(df):
+    aaa = []
+    ttt = []
+    ccc = []
+    ggg = []
+    for i in range(2, len(df.columns)):
+        aa, tt, gg, cc, gap = 0, 0, 0, 0, 0
+        st = list(df.iloc[:, i])
+        aa += st.count('A')
+        tt += st.count('T')
+        cc += st.count('C')
+        gg += st.count('G')
+        gap += st.count('-')
+        if gap / df.shape[0] < 0.5:
+            aaa.append(aa / df.shape[0])
+            ttt.append(tt / df.shape[0])
+            ccc.append(cc / df.shape[0])
+            ggg.append(gg / df.shape[0])
+    print(aaa)
+    print(ttt)
+    print(ccc)
+    print(ggg)
+"""""
+Функция рассчитывает количество A, T, C, G в каждом столбце DataFrame, исключая столбцы, где доля пропусков '-' больше 50%. 
+Ничего не возвращает, выводит результаты в консоль :rtype: None 
+"""""
+
+gtre = itt(poe(mat(clo())))
+"""""
+Последовательность выполнения функций
+"""""
+
+from json import *
+with open('sample.json', 'w') as fp:
+    dump(clo(), fp)
+"""""
+Сохранение результата работы функции clo() в JSON-файл
+"""""
