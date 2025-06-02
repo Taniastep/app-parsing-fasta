@@ -95,4 +95,53 @@ with open('sample.json', 'w') as fp:
     dump(clo(), fp)
 """""
 Сохранение результата работы функции clo() в JSON-файл
+
 """""
+Alignment_and_Query = []  # Список для хранения строк Query и Alignment
+Line_number = 0  # Счетчик номеров строк в файле
+matrix1 = []  # Матрица для хранения данных о выравнивании
+row = []  # Временный список для построения строк матрицы
+
+# Открытие файла с данными выравнивания 
+file = open(r'C:\Users\Tania\AppData\Roaming\JetBrains\PyCharmCE2023.3\scratches\CALM2P2_Callithrix_12.txt', 'r')
+sas = file.readlines()  # Чтение всех строк файла
+cleaned_file = [s.replace('\n', '') for s in sas]  # Удаление символов новой строки
+
+# Поиск позиций строк Alignment и Query в файле
+for line in sas:
+    Line_number += 1
+    if line.startswith("  Alignment:"):
+        Alignment1 = Line_number + 1  # Позиция начала данных выравнивания
+        Alignment = Line_number  # Позиция строки Alignment
+    if line.startswith("Query:"):
+        Query = Line_number - 1  # Позиция строки Query
+
+# Извлечение информации о конце выравнивания
+s = cleaned_file[Alignment1 - 4]
+d = s.split()
+end = int(d[5])  # Номер последней позиции в выравнивании
+
+# Построение матрицы данных выравнивания с шагом 5 строк
+for i in range(0, len(sas) - Alignment1, 5):
+    split_Alignment = cleaned_file[Alignment1 + i].split()
+    row = []
+    row.append(split_Alignment[2])  # Добавление данных в строку матрицы
+    row.append(split_Alignment[1])
+    row.append(split_Alignment[3])
+    matrix1.append(row)
+    a = int(split_Alignment[3])
+    
+    row = []
+    split_Alignment = cleaned_file[Alignment1 + i + 2].split()
+    row.append(split_Alignment[2])  # Добавление данных в строку матрицы
+    row.append(split_Alignment[1])
+    row.append(split_Alignment[3])
+    matrix1.append(row)
+    
+    if a == end:  # Прекращение при достижении конца выравнивания
+        break
+
+# Добавление строк Query и Alignment в результирующий список
+Alignment_and_Query.append(cleaned_file[Query])
+Alignment_and_Query.append(cleaned_file[Alignment])
+print(Alignment_and_Query)  # Вывод результата
