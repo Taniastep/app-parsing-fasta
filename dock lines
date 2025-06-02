@@ -97,51 +97,91 @@ with open('sample.json', 'w') as fp:
 Сохранение результата работы функции clo() в JSON-файл
 
 """""
-Alignment_and_Query = []  # Список для хранения строк Query и Alignment
-Line_number = 0  # Счетчик номеров строк в файле
-matrix1 = []  # Матрица для хранения данных о выравнивании
-row = []  # Временный список для построения строк матрицы
 
-# Открытие файла с данными выравнивания 
-file = open(r'C:\Users\Tania\AppData\Roaming\JetBrains\PyCharmCE2023.3\scratches\CALM2P2_Callithrix_12.txt', 'r')
-sas = file.readlines()  # Чтение всех строк файла
-cleaned_file = [s.replace('\n', '') for s in sas]  # Удаление символов новой строки
-
-# Поиск позиций строк Alignment и Query в файле
-for line in sas:
-    Line_number += 1
-    if line.startswith("  Alignment:"):
-        Alignment1 = Line_number + 1  # Позиция начала данных выравнивания
-        Alignment = Line_number  # Позиция строки Alignment
-    if line.startswith("Query:"):
-        Query = Line_number - 1  # Позиция строки Query
-
-# Извлечение информации о конце выравнивания
-s = cleaned_file[Alignment1 - 4]
-d = s.split()
-end = int(d[5])  # Номер последней позиции в выравнивании
-
-# Построение матрицы данных выравнивания с шагом 5 строк
-for i in range(0, len(sas) - Alignment1, 5):
-    split_Alignment = cleaned_file[Alignment1 + i].split()
-    row = []
-    row.append(split_Alignment[2])  # Добавление данных в строку матрицы
-    row.append(split_Alignment[1])
-    row.append(split_Alignment[3])
-    matrix1.append(row)
-    a = int(split_Alignment[3])
+def cvv():
+    """""
+    Читает указанный файл, находит ключевые блоки данных ("Alignment:", "Query:"), обрабатывает строки внутри этих блоков и возвращает массив структурированных данных. 
+    Возращает матрицу, содержащую обработанные строки файла.
+    """""
     
+    """
+    Переменная для хранения промежуточных результатов
+    """
+    Alignment_and_Query = []
+    Line_number = 0
+    matrix1 = []
+    """"" Буферная переменная для временных данных """""
     row = []
-    split_Alignment = cleaned_file[Alignment1 + i + 2].split()
-    row.append(split_Alignment[2])  # Добавление данных в строку матрицы
-    row.append(split_Alignment[1])
-    row.append(split_Alignment[3])
-    matrix1.append(row)
+    with open(r'C:\Users\Tania\AppData\Roaming\JetBrains\PyCharmCE2023.3\scratches\CALM2P2_Callithrix_12.txt', 'r') as file:
+        sas = file.readlines()
+        cleaned_file = [line.strip() for line in sas]
+        
+        """"" 
+        Обработка строк для нахождения номеров нужных блоков
+        """""
+        for line in sas:
+            Line_number += 1
+            if line.startswith("  Alignment:"):
+                Alignment1 = Line_number + 1
+                Alignment = Line_number
+            
+            if line.startswith("Query:"):
+                Query = Line_number - 1
+                
+        s = cleaned_file[Alignment1 - 4]
+        d = s.split()
+        end = int(d[5])
+        
+        """""
+        Цикл обработки данных между блоками "Alignment:" и "Query:"
+        """""
+        for i in range(0, len(sas) - Alignment1, 5):
+            split_Alignment = cleaned_file[Alignment1 + i].split()
+            row = [
+                split_Alignment[2],   # Значение поля №2
+                split_Alignment[1],   # Значение поля №1
+                split_Alignment[3]    # Значение поля №3
+            ]
+            matrix1.append(row)
+            
+            a = int(split_Alignment[3])
+            
+            if a != end:
+                continue
+            
+            split_Alignment = cleaned_file[Alignment1 + i + 2].split()
+            row = [
+                split_Alignment[2],
+                split_Alignment[1],
+                split_Alignment[3]
+            ]
+            matrix1.append(row)
+            
+            if a == end:
+                break
+        
+        """""
+        Сохраняем последнюю найденную строку из блока "Query:" и "Alignment:"
+        """""
+        Alignment_and_Query.append(cleaned_file[Query])
+        Alignment_and_Query.append(cleaned_file[Alignment])
+        print(Alignment_and_Query)
     
-    if a == end:  # Прекращение при достижении конца выравнивания
-        break
+    return matrix1
 
-# Добавление строк Query и Alignment в результирующий список
-Alignment_and_Query.append(cleaned_file[Query])
-Alignment_and_Query.append(cleaned_file[Alignment])
-print(Alignment_and_Query)  # Вывод результата
+
+def gvv(matrix1):
+    """
+    Получив на входе структуру данных от `cvv`, преобразует её в объект типа `pandas.DataFrame` и записывает этот DataFrame в CSV-файл.
+    Входные данные матрица.
+    Функция ничего не возращает
+    """
+    df1 = pd.DataFrame(matrix1)
+    csv_path = r'C:\Users\Tania\AppData\Roaming\JetBrains\PyCharmCE2023.3\scratches\df1_csv'
+    df1.to_csv(csv_path, index=False)
+    print(df1)
+
+ghhh = gvv(cvv())
+"""""
+Основной вызов функций (ghhh = gvv(cvv())`) объединяет обе функции последовательно — сначала считываются и обрабатываются данные из файла, затем создается и сохраняется таблица.
+"""""
