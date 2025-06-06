@@ -138,9 +138,9 @@ def cvv():
         for i in range(0, len(sas) - Alignment1, 5):
             split_Alignment = cleaned_file[Alignment1 + i].split()
             row = [
-                split_Alignment[2],   # Значение поля №2
-                split_Alignment[1],   # Значение поля №1
-                split_Alignment[3]    # Значение поля №3
+                split_Alignment[2],   
+                split_Alignment[1],  
+                split_Alignment[3]    
             ]
             matrix1.append(row)
             
