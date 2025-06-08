@@ -16,7 +16,7 @@ def main():
         if choice == 'F':
             print("Запуск парсинга FASTA...")
             result = clo()
-            with open('sample1.json', 'w') as fp:
+            with open('sample3.json', 'w') as fp:
                 dump(result, fp)
             print("Результат сохранен в sample1.json")
             break
